@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Catálogo Online</title>
-    <!-- Tailwind CSS para diseño profesional -->
+    <title>Paula Global Shop - Perfumes Importados</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -12,102 +12,73 @@
 
     <!-- Header / Banner -->
     <header class="bg-black text-white p-4 text-center sticky top-0 z-50 shadow-md">
-        <h1 class="text-xl font-bold tracking-wider">🌟 MI TIENDA DE IMPORTADOS</h1>
-        <p class="text-xs text-gray-300">¡Precio mayorista a partir de 5 productos surtidos!</p>
+        <h1 class="text-xl font-bold tracking-wider">PAULA GLOBAL SHOP</h1>
+        <p class="text-xs text-gray-300">✨ Venta Mayorista y Minorista de Perfumes Árabes</p>
     </header>
 
     <!-- Buscador -->
-    <div class="max-w-md mx-auto p-4">
-        <input type="text" id="buscador" placeholder="¿Qué estás buscando?" 
-            class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black text-sm bg-white shadow-sm">
+    <div class="p-4 max-w-md mx-auto">
+        <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+            <input type="text" id="buscador" placeholder="Busca tu perfume favorito..." 
+                class="w-full pl-10 pr-4 py-2 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-black">
+        </div>
     </div>
 
-    <!-- Contenedor de Productos -->
-    <main class="max-w-md mx-auto px-4 grid grid-cols-2 gap-4" id="contenedor-productos">
-        <!-- Los productos se cargan solos aquí -->
+    <!-- Catálogo de Productos -->
+    <main class="max-w-4xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-3 gap-4" id="contenedor-productos">
+        <!-- Los productos se cargan solos desde JavaScript -->
     </main>
 
-    <!-- Botón Flotante del Carrito -->
-    <div id="btn-carrito-flotante" class="fixed bottom-4 left-4 right-4 max-w-md mx-auto bg-black text-white p-4 rounded-2xl shadow-2xl flex justify-between items-center cursor-pointer hidden z-40">
-        <div class="flex items-center space-x-2">
-            <i class="fa-solid fa-shopping-cart text-lg"></i>
-            <span id="cantidad-carrito" class="font-bold text-sm">0 productos</span>
+    <!-- Barra Inferior del Carrito -->
+    <div id="barra-carrito" class="fixed bottom-0 left-0 right-0 bg-black text-white p-4 shadow-lg hidden justify-between items-center z-50">
+        <div>
+            <span id="cantidad-carrito" class="font-bold">0</span> productos seleccionados
         </div>
-        <div class="flex items-center space-x-2">
-            <span id="total-carrito" class="font-bold text-base">$0</span>
-            <i class="fa-solid fa-chevron-right text-xs"></i>
-        </div>
+        <button onclick="enviarPedidoWhatsApp()" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full font-bold text-sm transition">
+            <i class="fa-brands fa-whatsapp mr-2"></i> Pedir por WhatsApp
+        </button>
     </div>
 
-    <!-- Modal del Carrito -->
-    <div id="modal-carrito" class="fixed inset-0 bg-black/50 z-50 hidden flex justify-end">
-        <div class="bg-white w-full max-w-md h-full p-6 flex flex-col justify-between overflow-y-auto">
-            <div>
-                <div class="flex justify-between items-center border-b pb-4 mb-4">
-                    <h2 class="text-lg font-bold">Tu Carrito</h2>
-                    <button id="cerrar-carrito" class="text-gray-500 hover:text-black text-2xl font-bold">&times;</button>
-                </div>
-                <div id="lista-items-carrito" class="space-y-4">
-                    <!-- Items -->
-                </div>
-            </div>
-            
-            <div class="border-t pt-4 mt-4">
-                <div class="flex justify-between text-lg font-bold mb-4">
-                    <span>Total estimado:</span>
-                    <span id="modal-total">$0</span>
-                </div>
-                <button id="enviar-whatsapp" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl flex items-center justify-center space-x-2 shadow-lg">
-                    <i class="fa-brands fa-whatsapp text-xl"></i>
-                    <span>Enviar pedido por WhatsApp</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Lógica de la Tienda -->
     <script>
-        // AQUÍ PUEDES MODIFICAR TUS PRODUCTOS FÁCILMENTE
+        // TU NÚMERO DE WHATSAPP (Cámbialo por el tuyo con código de país y área, sin el +)
+        const tuNumeroWhatsApp = "549343XXXXXXXX";
+
+        // BASE DE DATOS DE PRODUCTOS (Basada en tu lista oficial)
         const productos = [
-            { id: 1, nombre: "Perfume Árabe 9 PM Elixir", min: 29500, may: 24000, img: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=400" },
-            { id: 2, nombre: "Aceite Karseell Maca 500ml", min: 15900, may: 12500, img: "https://images.unsplash.com/photo-1608248597359-97e3a9c7b949?w=400" },
-            { id: 3, nombre: "Body Splash Victoria's Secret", min: 26650, may: 21000, img: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400" },
-            { id: 4, nombre: "Termo Stanley 1 Litro Original", min: 27900, may: 23500, img: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400" }
+            { id: 1, nombre: "Afnan 9pm Black 100ml", mayorista: 39200, minorista: 62720, stock: true, img: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=400" },
+            { id: 2, nombre: "Afnan 9pm Elixir", mayorista: 49600, minorista: 79360, stock: true, img: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400" },
+            { id: 3, nombre: "Afnan 9am Dive", mayorista: 39600, minorista: 63360, stock: true, img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400" },
+            { id: 4, nombre: "Lattafa Asad", mayorista: 40000, minorista: 64000, stock: true, img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=400" },
+            { id: 5, nombre: "Lattafa Khamrah Qahwa", mayorista: 32400, minorista: 51840, stock: true, img: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=400" },
+            { id: 6, nombre: "Armaf Club de Nuit Intense Man 105ml", mayorista: 43200, minorista: 69120, stock: true, img: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=400" },
+            { id: 7, nombre: "Bharara King", mayorista: 72800, minorista: 116480, stock: true, img: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400" },
+            { id: 8, nombre: "French Avenue Liquid Brun", mayorista: 57200, minorista: 91520, stock: true, img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400" },
+            { id: 9, nombre: "Rasasi Hawas for Him", mayorista: 44800, minorista: 71680, stock: true, img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=400" },
+            { id: 10, nombre: "Pride Ishq Al Shuyukh Gold", mayorista: 32000, minorista: 51200, stock: true, img: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=400" }
         ];
 
         let carrito = [];
 
-        const contenedorProductos = document.getElementById('contenedor-productos');
-        const btnFlotante = document.getElementById('btn-carrito-flotante');
-        const cantidadCarrito = document.getElementById('cantidad-carrito');
-        const totalCarrito = document.getElementById('total-carrito');
-        const modalCarrito = document.getElementById('modal-carrito');
-        const cerrarCarrito = document.getElementById('cerrar-carrito');
-        const listaItemsCarrito = document.getElementById('lista-items-carrito');
-        const modalTotal = document.getElementById('modal-total');
-        const btnEnviarWp = document.getElementById('enviar-whatsapp');
-        const buscador = document.getElementById('buscador');
-
         function mostrarProductos(lista) {
-            contenedorProductos.innerHTML = '';
-            if(lista.length === 0) {
-                contenedorProductos.innerHTML = <p class="col-span-2 text-center text-gray-400 py-10">No se encontraron productos.</p>;
-                return;
-            }
+            const contenedor = document.getElementById("contenedor-productos");
+            contenedor.innerHTML = "";
+            
             lista.forEach(p => {
-                contenedorProductos.innerHTML += `
-                    <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                contenedor.innerHTML += `
+                    <div class="bg-white rounded-xl shadow-sm border p-3 flex flex-col justify-between">
                         <div>
-                            <img src="${p.img}" alt="${p.nombre}" class="w-full h-36 object-cover rounded-xl mb-2 bg-gray-100">
-                            <h3 class="font-medium text-xs mb-1 text-gray-800 line-clamp-2">${p.nombre}</h3>
+                            <img src="${p.img}" alt="${p.nombre}" class="w-full h-36 object-cover rounded-lg mb-2">
+                            <h3 class="font-semibold text-sm mb-1">${p.nombre}</h3>
+                            <p class="text-xs text-gray-500 mb-1">Mayorista: $${p.mayorista.toLocaleString()}</p>
+                            <p class="text-sm font-bold text-black mb-2">Minorista: $${p.minorista.toLocaleString()}</p>
                         </div>
                         <div>
-                            <div class="my-2 bg-gray-50 p-2 rounded-lg">
-                                <div class="text-[11px] text-gray-500">Minorista: <span class="font-semibold">$${p.min.toLocaleString()}</span></div>
-                                <div class="text-xs font-bold text-black">Mayorista: $${p.may.toLocaleString()} <span class="text-[9px] bg-black text-white px-1 py-0.5 rounded ml-1">(-5u)</span></div>
-                            </div>
-                            <button onclick="agregarAlCarrito(${p.id})" class="w-full bg-black text-white py-2 rounded-xl text-xs font-semibold hover:bg-gray-800 transition shadow-sm">
-                                Agregar +
+                            <span class="inline-block px-2 py-0.5 text-[10px] bg-green-100 text-green-700 rounded-full mb-2 font-medium">En Stock</span>
+                            <button onclick="agregarAlCarrito(${p.id})" class="w-full bg-black text-white py-1.5 rounded-lg text-xs font-bold hover:bg-gray-800 transition">
+                                Agregar
                             </button>
                         </div>
                     </div>
@@ -115,78 +86,40 @@
             });
         }
 
-        buscador.addEventListener('input', (e) => {
-            const texto = e.target.value.toLowerCase();
-            const filtrados = productos.filter(p => p.nombre.toLowerCase().includes(texto));
-            mostrarProductos(filtrados);
-        });
-
         function agregarAlCarrito(id) {
             const producto = productos.find(p => p.id === id);
-            const enCarrito = carrito.find(item => item.id === id);
-            if (enCarrito) {
-                enCarrito.cantidad++;
-            } else {
-                carrito.push({ ...producto, cantidad: 1 });
-            }
+            carrito.push(producto);
             actualizarCarrito();
         }
 
         function actualizarCarrito() {
-            const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
-            const esMayorista = totalItems >= 5;
-            
-            let precioTotal = carrito.reduce((acc, item) => {
-                const precioUnitario = esMayorista ? item.may : item.min;
-                return acc + (precioUnitario * item.cantidad);
-            }, 0);
-
-            if (totalItems > 0) {
-                btnFlotante.classList.remove('hidden');
-                cantidadCarrito.innerText = ${totalItems} prod. ${esMayorista ? '🌟 (Mayorista)' : ''};
-                totalcarrito.innerText = $${precioTotal.toLocaleString()};
+            document.getElementById("cantidad-carrito").innerText = carrito.length;
+            const barra = document.getElementById("barra-carrito");
+            if (carrito.length > 0) {
+                barra.classList.remove("hidden");
+                barra.classList.add("flex");
             } else {
-                btnFlotante.classList.add('hidden');
-                modalCarrito.classList.add('hidden');
+                barra.classList.add("hidden");
+                barra.classList.remove("flex");
             }
-
-            listaItemsCarrito.innerHTML = '';
-            carrito.forEach(item => {
-                const precioReal = esMayorista ? item.may : item.min;
-                listaItemsCarrito.innerHTML += `
-                    <div class="flex justify-between items-center border-b pb-2">
-                        <div>
-                            <h4 class="text-sm font-bold">${item.nombre}</h4>
-                            <p class="text-xs text-gray-500">Cant: ${item.cantidad} x $${precioReal.toLocaleString()}</p>
-                        </div>
-                        <span class="font-bold text-sm">$${(precioReal * item.cantidad).toLocaleString()}</span>
-                    </div>
-                `;
-            });
-            modalTotal.innerText = $${precioTotal.toLocaleString()};
         }
 
-        btnFlotante.addEventListener('click', () => modalCarrito.classList.remove('hidden'));
-        cerrarCarrito.addEventListener('click', () => modalCarrito.classList.add('hidden'));
-
-        btnEnviarWp.addEventListener('click', () => {
-            const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
-            const esMayorista = totalItems >= 5;
-            
-            let mensaje = Hola! Quiero realizar el siguiente pedido:%0A%0A;
-            carrito.forEach(item => {
-                const p = esMayorista ? item.may : item.min;
-                mensaje += • ${item.cantidad}x ${item.nombre} ($${p.toLocaleString()} c/u)%0A;
+        function enviarPedidoWhatsApp() {
+            let mensaje = "Hola Paula Global Shop! 👋 Quiero hacer el siguiente pedido:\n\n";
+            let total = 0;
+            carrito.forEach((p, index) => {
+                mensaje += ${index + 1}. ${p.nombre} - $${p.minorista}\n;
+                total += p.minorista;
             });
+            mensaje += \n*Total estimado (Minorista): $${total.toLocaleString()}*\nEspero confirmación. ¡Gracias!;
             
-            const precioTotal = carrito.reduce((acc, item) => acc + ((esMayorista ? item.may : item.min) * item.cantidad), 0);
-            mensaje += %0A*Total a abonar: $${precioTotal.toLocaleString()}* (${esMayorista ? 'Precio Mayorista aplicado 🌟' : 'Precio Minorista'});
+            window.open(https://wa.me/${tuNumeroWhatsApp}?text=${encodeURIComponent(mensaje)}, '_blank');
+        }
 
-            // ⚠️ CAMBIA ESTE NÚMERO POR TU WHATSAPP (Código de país + área + número, sin el signo +)
-            // Ejemplo para Argentina: 5493434123456
-            const tuNumeroWhatsApp = "549343XXXXXXXX"; 
-            
-            window.open(https://wa.me/${tuNumeroWhatsApp}?text=${mensaje}, '_blank');
+        document.getElementById("buscador").addEventListener("input", (e) => {
+            const texto = e.target.value.toLowerCase();
+            const filtrados = productos.filter(p => p.nombre.toLowerCase().includes(texto));
+            mostrarProductos(filtrados);
         });
 
         mostrarProductos(productos);
