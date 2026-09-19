@@ -1,40 +1,47 @@
-[11:36, 18/9/2026] Camilo👣: <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Catálogo Online</title>
-    <!-- Tailwind CSS para diseño profesional -->
+    <title>Paula Global Shop</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-50 text-gray-800 pb-28">
-
-    <!-- Header / Banner -->
-    <header class="bg-black text-white p-4 text-center sticky top-0 z-50 shadow-md">
-        <h1 class="text-xl font-bold tracking-wider">🌟 MI TIENDA DE IMPORTADOS</h1>
-        <p class="text-xs text-gray-300">¡Precio mayorista a partir de 5 productos surtidos!</p>
+<body class="bg-gray-100 pb-24">
+    <header class="bg-black text-white p-4 text-center sticky top-0 z-50">
+        <h1 class="text-xl font-bold">PAULA GLOBAL SHOP</h1>
+        <p class="text-xs text-gray-300">Venta Mayorista y Minorista de Perfumes</p>
     </header>
 
-    <!-…
-[17:45, 18/9/2026] Camilo👣: <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paula Global Shop - Perfumes Importados</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body class="bg-gray-50 text-gray-800 pb-28">
+    <div class="p-4 max-w-md mx-auto">
+        <input type="text" id="buscador" placeholder="Buscar perfume..." class="w-full px-4 py-2 border rounded-full text-sm">
+    </div>
 
-    <!-- Header / Banner -->
-    <header class="bg-black text-white p-4 text-center sticky top-0 z-50 shadow-md">
-        <h1 class="text-xl font-bold tracking-wider">PAULA GLOBAL SHOP</h1>
-        <p class="text-xs text-gray-300">✨ Venta Mayorista y Minorista de Perfumes Árabes</p>
-    </header>
+    <main class="max-w-4xl mx-auto px-4 grid grid-cols-2 gap-4" id="contenedor">
+    </main>
 
-    <!-- Buscador -->
-…
-[17:51, 18/9/2026] Camilo👣: 
+    <script>
+        const productos = [
+            { id: 1, nombre: "Afnan 9pm Black 100ml", mayorista: 39200, minorista: 62720, img: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=400" },
+            { id: 2, nombre: "Lattafa Asad", mayorista: 40000, minorista: 64000, img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=400" }
+        ];
+
+        function mostrar(lista) {
+            const cont = document.getElementById("contenedor");
+            cont.innerHTML = "";
+            lista.forEach(p => {
+                cont.innerHTML += `
+                    <div class="bg-white p-3 rounded-xl shadow border flex flex-col justify-between">
+                        <div>
+                            <img src="${p.img}" class="w-full h-32 object-cover rounded mb-2">
+                            <h3 class="font-bold text-sm">${p.nombre}</h3>
+                            <p class="text-xs text-gray-500">Mayorista: $${p.mayorista.toLocaleString()}</p>
+                            <p class="text-sm font-bold">Minorista: $${p.minorista.toLocaleString()}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        mostrar(productos);
+    </script>
+</body>
+</html>
