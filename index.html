@@ -5,43 +5,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paula Global Shop</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-100 pb-24">
-    <header class="bg-black text-white p-4 text-center sticky top-0 z-50">
-        <h1 class="text-xl font-bold">PAULA GLOBAL SHOP</h1>
-        <p class="text-xs text-gray-300">Venta Mayorista y Minorista de Perfumes</p>
+<body class="bg-gray-50 text-gray-800 pb-28">
+
+    <header class="bg-black text-white p-4 text-center sticky top-0 z-50 shadow-md">
+        <h1 class="text-xl font-bold tracking-wider">PAULA GLOBAL SHOP</h1>
+        <p class="text-xs text-gray-300">✨ Venta Mayorista y Minorista de Perfumes Árabes</p>
     </header>
 
     <div class="p-4 max-w-md mx-auto">
-        <input type="text" id="buscador" placeholder="Buscar perfume..." class="w-full px-4 py-2 border rounded-full text-sm">
+        <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+            <input type="text" id="buscador" placeholder="Busca tu perfume favorito..." 
+                class="w-full pl-10 pr-4 py-2 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-black">
+        </div>
     </div>
 
-    <main class="max-w-4xl mx-auto px-4 grid grid-cols-2 gap-4" id="contenedor">
+    <main class="max-w-4xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-3 gap-4" id="contenedor-productos">
     </main>
 
+    <div id="barra-carrito" class="fixed bottom-0 left-0 right-0 bg-black text-white p-4 shadow-lg hidden justify-between items-center z-50">
+        <div>
+            <span id="cantidad-carrito" class="font-bold">0</span> productos seleccionados
+        </div>
+        <button onclick="enviarPedidoWhatsApp()" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full font-bold text-sm transition">
+            <i class="fa-brands fa-whatsapp mr-2"></i> Pedir por WhatsApp
+        </button>
+    </div>
+
     <script>
+        const tuNumeroWhatsApp = "549343XXXXXXXX"; // Reemplaza con tu número
+
         const productos = [
             { id: 1, nombre: "Afnan 9pm Black 100ml", mayorista: 39200, minorista: 62720, img: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=400" },
-            { id: 2, nombre: "Lattafa Asad", mayorista: 40000, minorista: 64000, img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=400" }
+            { id: 2, nombre: "Afnan 9pm Elixir", mayorista: 49600, minorista: 79360, img: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400" },
+            { id: 3, nombre: "Afnan 9am Dive", mayorista: 39600, minorista: 63360, img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400" },
+            { id: 4, nombre: "Lattafa Asad", mayorista: 40000, minorista: 64000, img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=400" },
+            { id: 5, nombre: "Lattafa Khamrah Qahwa", mayorista: 32400, minorista: 51840, img: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=400" },
+            { id: 6, nombre: "Armaf Club de Nuit Intense Man", mayorista: 43200, minorista: 69120, img: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=400" },
+            { id: 7, nombre: "Bharara King", mayorista: 72800, minorista: 116480, img: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400" },
+            { id: 8, nombre: "French Avenue Liquid Brun", mayorista: 57200, minorista: 91520, img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400" },
+            { id: 9, nombre: "Rasasi Hawas for Him", mayorista: 44800, minorista: 71680, img: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=400" },
+            { id: 10, nombre: "Pride Ishq Al Shuyukh Gold", mayorista: 32000, minorista: 51200, img: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=400" },
+            // Producto sin precio (ejemplo de cómo agregarlo)
+            { id: 11, nombre: "Perfume Sin Precio (Consultar)", mayorista: 0, minorista: 0, sinPrecio: true, img: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=400" }
         ];
 
-        function mostrar(lista) {
-            const cont = document.getElementById("contenedor");
-            cont.innerHTML = "";
+        let carrito = [];
+
+        function mostrarProductos(lista) {
+            const contenedor = document.getElementById("contenedor-productos");
+            contenedor.innerHTML = "";
+            
             lista.forEach(p => {
-                cont.innerHTML += `
-                    <div class="bg-white p-3 rounded-xl shadow border flex flex-col justify-between">
+                let precioTexto = p.sinPrecio ? 
+                    `<p class="text-sm font-bold text-gray-500 mb-2">Precio: Consultar</p>` :
+                    `<p class="text-xs text-gray-500">Mayorista: $${p.mayorista.toLocaleString()}</p>
+                     <p class="text-sm font-bold text-black mb-2">Minorista: $${p.minorista.toLocaleString()}</p>`;
+
+                contenedor.innerHTML += `
+                    <div class="bg-white rounded-xl shadow-sm border p-3 flex flex-col justify-between">
                         <div>
-                            <img src="${p.img}" class="w-full h-32 object-cover rounded mb-2">
-                            <h3 class="font-bold text-sm">${p.nombre}</h3>
-                            <p class="text-xs text-gray-500">Mayorista: $${p.mayorista.toLocaleString()}</p>
-                            <p class="text-sm font-bold">Minorista: $${p.minorista.toLocaleString()}</p>
+                            <img src="${p.img}" alt="${p.nombre}" class="w-full h-36 object-cover rounded-lg mb-2">
+                            <h3 class="font-semibold text-sm mb-1">${p.nombre}</h3>
+                            ${precioTexto}
                         </div>
+                        <button onclick="agregarAlCarrito(${p.id})" class="w-full bg-black text-white py-1.5 rounded-lg text-xs font-bold hover:bg-gray-800 transition">
+                            Agregar
+                        </button>
                     </div>
                 `;
             });
         }
-        mostrar(productos);
+
+        function agregarAlCarrito(id) {
+            const producto = productos.find(p => p.id === id);
+            carrito.push(producto);
+            document.getElementById("cantidad-carrito").innerText = carrito.length;
+            const barra = document.getElementById("barra-carrito");
+            barra.classList.remove("hidden");
+            barra.classList.add("flex");
+        }
+
+        function enviarPedidoWhatsApp() {
+            let mensaje = "Hola Paula Global Shop! 👋 Quiero hacer este pedido:\n\n";
+            let total = 0;
+            carrito.forEach((p, index) => {
+                let precioStr = p.sinPrecio ? "Consultar" : `$${p.minorista}`;
+                mensaje += `${index + 1}. ${p.nombre} - ${precioStr}\n`;
+                if(!p.sinPrecio) total += p.minorista;
+            });
+            if(total > 0) mensaje += `\n*Total Estimado: $${total.toLocaleString()}*`;
+            window.open(`https://wa.me/${tuNumeroWhatsApp}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+
+        document.getElementById("buscador").addEventListener("input", (e) => {
+            const texto = e.target.value.toLowerCase();
+            const filtrados = productos.filter(p => p.nombre.toLowerCase().includes(texto));
+            mostrarProductos(filtrados);
+        });
+
+        mostrarProductos(productos);
     </script>
 </body>
 </html>
